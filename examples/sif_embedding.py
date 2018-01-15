@@ -1,6 +1,10 @@
 import sys
+import logging
+
 sys.path.append('../src')
 import data_io, params, SIF_embedding
+
+logging.basicConfig(level=logging.DEBUG)
 
 # input
 wordfile = '../data/glove.840B.300d.txt' # word vector file, can be downloaded from GloVe website
@@ -10,14 +14,22 @@ rmpc = 1 # number of principal components to remove in SIF weighting scheme
 sentences = ['this is an example sentence', 'this is another sentence that is slightly longer']
 
 # load word vectors
+logging.info("Loading gloVe file")
 (words, We) = data_io.getWordmap(wordfile)
 # load word weights
+
+logging.info("Loading word frequencies")
 word2weight = data_io.getWordWeight(weightfile, weightpara) # word2weight['str'] is the weight for the word 'str'
+
+logging.info("Computing word weights")
 weight4ind = data_io.getWeight(words, word2weight) # weight4ind[i] is the weight for the i-th word
 # load sentences
+
+logging.info("Computing sentence embeddings")
 x, m, _ = data_io.sentences2idx(sentences, words) # x is the array of word indices, m is the binary mask indicating whether there is a word in that location
 w = data_io.seq2weight(x, m, weight4ind) # get word weights
 
+logging.info("Computing SIF")
 # set parameters
 params = params.params()
 params.rmpc = rmpc

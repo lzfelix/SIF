@@ -3,9 +3,22 @@ from __future__ import print_function
 import numpy as np
 import pickle
 from tree import tree
+import pandas as pd
+import csv
 #from theano import config
 
-def getWordmap(textfile):
+def getWordmap(wordfile):
+    wordEmbedding = pd.read_table(wordfile, sep=" ", index_col=0, header=None, quoting=csv.QUOTE_NONE)
+    words = {}
+    We = np.zeros(shape=(wordEmbedding.shape[0], wordEmbedding.shape[1]))
+    n = 0
+    for row in wordEmbedding.itertuples():
+        words[row[0]] = n
+        We[n] = row[1:]
+        n+=1
+    return (words, We)
+
+def ___getWordmap(textfile):
     words={}
     We = []
     f = open(textfile,'r')
